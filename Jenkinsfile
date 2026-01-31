@@ -15,15 +15,16 @@ pipeline {
 
         stage('🔍 Checkout') {
             steps {
-                // Checkout explicite sur main avec SCM
+                // Checkout explicite sur main avec credential GitHub
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
                         url: 'https://github.com/info-tech-nologie/food2.git',
-                        credentialsId: 'git-credentials' // Remplace par ton credential GitHub
+                        credentialsId: 'git-credentials' // Remplacer par ton credential GitHub
                     ]]
                 ])
                 script {
+                    // Git commit court
                     env.GIT_COMMIT_SHORT = sh(
                         script: "git rev-parse --short HEAD",
                         returnStdout: true
@@ -54,7 +55,7 @@ pipeline {
         stage('🔐 SAST - SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh """
+                    sh """#!/bin/bash
                         sonar-scanner \
                         -Dsonar.projectKey=food-delivery \
                         -Dsonar.sources=backend/,frontend/src/ \
@@ -144,7 +145,7 @@ pipeline {
 
         stage('🔒 Container Security Scan') {
             steps {
-                sh """
+                sh """#!/bin/bash
                     # Install Trivy
                     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 
@@ -163,7 +164,7 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                sh """
+                sh """#!/bin/bash
                     docker-compose -f docker-compose.staging.yml down
                     docker-compose -f docker-compose.staging.yml up -d
                 """
@@ -175,7 +176,7 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                sh """
+                sh """#!/bin/bash
                     docker run --rm -v $(pwd):/zap/wrk:rw \
                     -t owasp/zap2docker-stable zap-baseline.py \
                     -t http://staging-url:80 \
@@ -196,7 +197,7 @@ pipeline {
             }
             steps {
                 input message: 'Deploy to Production?', ok: 'Deploy'
-                sh """
+                sh """#!/bin/bash
                     docker-compose -f docker-compose.prod.yml down
                     docker-compose -f docker-compose.prod.yml up -d
                 """
