@@ -115,14 +115,17 @@ pipeline {
                         }
                     }
                     post {
-                        always {
-                            publishHTML([
-                                reportDir: 'backend/coverage/lcov-report',
-                                reportFiles: 'index.html',
-                                reportName: 'Backend Coverage'
-                            ])
-                        }
-                    }
+    always {
+        publishHTML([
+            reportDir: 'backend/coverage/lcov-report',
+            reportFiles: 'index.html',
+            reportName: 'Backend Coverage',
+            allowMissing: true,           // autoriser si le rapport est manquant
+            alwaysLinkToLastBuild: true,  // toujours pointer vers le dernier build
+            keepAll: true                 // conserver tous les anciens rapports
+        ])
+    }
+}
                 }
                 stage('Frontend Tests') {
                     steps {
