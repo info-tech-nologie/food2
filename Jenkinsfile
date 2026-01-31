@@ -15,7 +15,14 @@ pipeline {
 
         stage('🔍 Checkout') {
             steps {
-                checkout scm
+                // Checkout depuis GitHub main branch avec credentials
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/info-tech-nologie/food2.git',
+                        credentialsId: 'git-credentials' // à créer dans Jenkins
+                    ]]
+                ])
                 script {
                     env.GIT_COMMIT_SHORT = sh(
                         script: "git rev-parse --short HEAD",
