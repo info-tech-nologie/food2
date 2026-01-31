@@ -172,24 +172,27 @@ pipeline {
         }
 
         stage('🎯 DAST - OWASP ZAP') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                sh """#!/bin/bash
-                    docker run --rm -v $(pwd):/zap/wrk:rw \
-                    -t owasp/zap2docker-stable zap-baseline.py \
-                    -t http://staging-url:80 \
-                    -r zap-report.html \
-                    -J zap-report.json || true
-                """
-                publishHTML([
-                    reportDir: '.',
-                    reportFiles: 'zap-report.html',
-                    reportName: 'OWASP ZAP Report'
-                ])
-            }
-        }
+    when {
+        branch 'develop'
+    }
+    steps {
+        // Utiliser quotes simples et remplacer $(pwd) par $(pwd) échappé
+        sh '''
+            docker run --rm -v $(pwd):/zap/wrk:rw \
+            -t owasp/zap2docker-stable zap-baseline.py \
+            -t http://staging-url:80 \
+            -r zap-report.html \
+            -J zap-report.json || true
+        '''
+        publishHTML([
+            reportDir: '.',
+            reportFiles: 'zap-report.html',
+            reportName: 'OWASP ZAP Report'
+        ])
+    }
+}
+
+                }
 
         stage('🏭 Deploy to Production') {
             when {
