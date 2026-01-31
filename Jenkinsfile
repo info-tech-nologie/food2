@@ -188,10 +188,14 @@ pipeline {
             -J zap-report.json || true
         '''
         publishHTML([
-            reportDir: '.',
-            reportFiles: 'zap-report.html',
-            reportName: 'OWASP ZAP Report'
-        ])
+    reportDir: 'backend/coverage/lcov-report',  // dossier du rapport
+    reportFiles: 'index.html',                  // fichier HTML à publier
+    reportName: 'Backend Coverage',             // nom affiché dans Jenkins
+    allowMissing: true,                         // autoriser si le rapport est absent
+    alwaysLinkToLastBuild: true,                // toujours lier au dernier build
+    keepAll: true                               // garder tous les rapports précédents
+])
+
     }
 
 
