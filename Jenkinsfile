@@ -1,19 +1,19 @@
 pipeline {
-    agent any
-
+     agent {
+        docker {
+            image 'node:18'
+            args '-u root:root'
+        }
+    }
     environment {
         DOCKER_REGISTRY = 'your-registry.com'
         IMAGE_NAME = 'food-delivery'
         SONAR_HOST = 'http://sonarqube:9000'
     }
 
-    agent {
-    docker {
-        image 'node:18'
-        args '-u root:root'
-    }
-}
-
+    // tools {
+    //     nodejs 'NodeJS-18'
+    // }
 
     stages {
 
