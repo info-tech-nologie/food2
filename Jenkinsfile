@@ -15,12 +15,12 @@ pipeline {
 
         stage('🔍 Checkout') {
             steps {
-                // Checkout depuis GitHub main branch avec credentials
+                // Checkout explicite sur main avec SCM
                 checkout([$class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
                         url: 'https://github.com/info-tech-nologie/food2.git',
-                        credentialsId: 'git-credentials' // à créer dans Jenkins
+                        credentialsId: 'git-credentials' // Remplace par ton credential GitHub
                     ]]
                 ])
                 script {
