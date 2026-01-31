@@ -7,9 +7,13 @@ pipeline {
         SONAR_HOST = 'http://sonarqube:9000'
     }
 
-    tools {
-        nodejs 'NodeJS-18'
+    agent {
+    docker {
+        image 'node:18'
+        args '-u root:root'
     }
+}
+
 
     stages {
 
